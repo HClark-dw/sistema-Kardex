@@ -1,6 +1,123 @@
-# 📊 Sistema Desktop de Gestión de Inventarios y Kardex Valorado
+Valued Kardex & Desktop Inventory Management System
 
-Aplicación de escritorio corporativa desarrollada en **Java 21** con persistencia en **MySQL**, diseñada para la administración integral de inventarios, valoración de existencias mediante el método contable de **Promedio Ponderado Móvil (IAS 2 / NIC 2)**, facturación de compras y ventas, dashboard de métricas de ingresos/egresos y generación de reportes financieros exportables.
+🇺🇸 English Version
+
+Corporate desktop application developed in Java 21 with MySQL persistence, designed for comprehensive inventory management, stock valuation using the Moving Weighted Average (IAS 2 / NIC 2) accounting method, purchase and sales invoicing, an income/expense metrics dashboard, and exportable financial reports generation.
+
+## 🚀 Key Features
+
+### 1. 🔐 Login & Security Module
+
+* **Secure Authentication:** User validation with SHA-256 encrypted passwords (with backwards-compatible fallback).
+
+* **Role Management:** Differentiated access profiles (ADMINISTRATOR and OPERATOR).
+
+* **MySQL Connection Wizard:** Integrated setup dialog to configure host, port, database, credentials, and test real-time connectivity without restarting.
+
+## 2. 📈 Financial Metrics Dashboard (Income & Expenses)
+
+### Real-Time KPI Cards:
+
+* **Total Income:** Accumulated invoiced sales.
+
+  * **Total Expenses:** Accumulated investment in supplier purchases.
+
+  * **Gross Profit:** Real financial margin (Income - Historical Cost of Goods Sold).
+
+  * **Inventory Valuation:** Total valued amount of current stock (Stock * Average Cost).
+
+* **Comparative Chart:** High-resolution bar chart visualizing cash inflow vs. outflow trends over time.
+
+* **Critical Stock Alerts:** Instant list of products whose stock levels are at or below minimum safety limits.
+
+* **Transactional Monitoring:** Quick access feed to recently logged sales and purchases.
+
+### 3. 📦 Inventory & Product Catalog Module
+
+* **Comprehensive Management:** Create, edit, and deactivate products with SKU/barcode, name, category, and unit of measure (UNIT, KG, LT, BOX, COIL, etc.).
+
+* **Strict Business Rules:** Stock and average cost are immutable via arbitrary manual edits; they update strictly through purchase and sale transactions to preserve Kardex accounting integrity.
+
+* **Visual Stock Indicator:** Immediate red status (CRITICAL) when a product requires replenishment.
+
+* **Direct Export:** Complete inventory export to Microsoft Excel-compatible CSV format.
+
+### 4. 📥 Purchase Registration Module (Kardex Inflow)
+- **Supplier Invoicing:** Selection of supplier, document type (Invoice, Receipt, Dispatch Note, etc.), series, and sequential number.
+- **Moving Weighted Average Calculation:** Each purchase updates the unit average cost of the product by applying the accounting formula:
+  $$\text{New Average Cost} = \frac{(\text{Previous Stock} \times \text{Previous Average Cost}) + (\text{Purchased Quantity} \times \text{Purchase Cost})}{\text{Previous Stock} + \text{Purchased Quantity}}$$
+- **Movement Generation:** Automatic entry in the `kardex` table with `PURCHASE_ENTRY` type.
+- **Detailed History:** Query of historical purchases with an inspection modal for line items.
+
+### 5. 🛒 Sales Registration Module (Kardex Outflow)
+- **Customer Sales:** Issuance of sales receipts (Receipt, Sales Invoice, Ticket) to registered customers.
+- **Real-Time Stock Validation:** Automatic lock that prevents invoicing quantities higher than the available warehouse stock.
+- **Historical Cost Capture:** Records the active average cost at the exact moment of outflow to calculate commercial profit without future alterations.
+- **Immediate Update:** Atomic stock deduction and insertion of the `SALE_OUTFLOW` record in the Kardex.
+- **History and Details:** Auditable record of all sales with profit margin calculation per operation.
+
+### 6. 📑 Physical and Valued Kardex per Product
+- **Official Kardex Ledger:** Detailed view of movements per product:
+  * **Inflows:** Quantity, Unit Cost, and Total Cost.
+  * **Outflows:** Quantity, Unit Cost, and Total Cost.
+  * **Ending Balances:** Warehouse quantity, Moving Average Cost, and Total Valued Balance.
+- **Date Range Filters:** Audit between specific dates (`yyyy-MM-dd`).
+- **Accounting Export:** Download in CSV format ready for tax filings or accounting audits.
+
+### 7. 📊 Reports Center
+- **General Valued Inventory Report:** Stock levels, average costs, total valuation, and projected margin.
+- **Sales and Gross Profit Report:** Summary of revenue, cost of goods sold, and profit margin percentage.
+- **Purchases and Expenses Report:** Total purchases per period and supplier.
+- **Critical Stock and Replenishment Report:** Analysis of inventory deficits and estimated financial cost to replenish to optimal levels.
+- **Printing and PDF:** Support for direct printing or saving to PDF (`Ctrl + P` / Print Button).
+
+---
+
+## 🛠 Tech Stack
+
+- **Language:** Java 21 (LTS).
+- **Database:** MySQL 8.x / MariaDB.
+- **Connection Pool:** HikariCP 5.1.0 (ultra-fast and resilient connections).
+- **JDBC Driver:** MySQL Connector/J 8.3.0.
+- **GUI Framework:** Modern Java Swing powered by **FlatLaf 3.4.1** (Dynamic Light and Dark Mode support, rounded corners, and high visual fidelity).
+- **Build Tool:** Apache Maven 3.x.
+
+---
+
+## 🗄 Database Schema
+
+The SQL script is located at `database/schema.sql` and includes the following normalized tables:
+
+1. `usuarios`: Access accounts, SHA-256 hashed passwords, and roles.
+2. `categorias`: Product categories.
+3. `proveedores`: Tax data, contact info, and company name.
+4. `clientes`: Commercial clients and individual customers.
+5. `productos`: Catalog, stock levels, minimum stock, price, and average cost.
+6. `compras` & `detalle_compras`: Transactional log for supplier purchases.
+7. `ventas` & `detalle_ventas`: Transactional log for customer sales.
+8. `kardex`: Physical-valued movement ledger with calculated balances.
+
+---
+
+## 📋 Initial Demo Credentials
+
+Upon importing `database/schema.sql`, the following test users are created:
+
+| User | Password | Role | Access Level |
+| :--- | :--- | :--- | :--- |
+| **`admin`** | `admin123` | **ADMINISTRATOR** | Full access to all features and settings |
+| **`operador`** | `operador123` | **OPERADOR** | Operational sales, purchases, and queries |
+
+---
+
+## ⚙ Installation and Setup Instructions
+
+### Step 1: Configure MySQL Database
+1. Start your MySQL server (via XAMPP, Laragon, MySQL Server, or Docker).
+2. Open your preferred database client (phpMyAdmin, MySQL Workbench, DBeaver, or terminal).
+3. Execute the script:
+   ```sql
+   source database/schema.sql;
 
 ---
 
