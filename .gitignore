@@ -1,0 +1,15 @@
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.logs
+.idea/
+*.iml
+.project
+.classpath
+.settings/
+.vscode/
+*.bak
+*.tmp
+database.properties.local
