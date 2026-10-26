@@ -121,6 +121,11 @@ Upon importing `database/schema.sql`, the following test users are created:
 
 ---
 
+
+
+
+
+
 ## 🚀 Características Principales
 
 ### 1. 🔐 Módulo de Login y Seguridad
